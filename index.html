@@ -31,6 +31,7 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.1);
       padding: 10px;
       text-align: center;
+      cursor: pointer;
     }
     .product img {
       width: 100%;
@@ -54,45 +55,69 @@
     button:hover {
       background-color: #088;
     }
+
+    #popup, #cartPopup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #popupContent, #cartPopupContent {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <h1>متجري البسيط</h1>
-    <div id="cart">
+    <div>
       🛒 السلة: <span id="cartCount">0</span> منتج - <span id="totalPrice">0</span> د.أ
+      <button onclick="showCart()">عرض السلة</button>
     </div>
   </header>
 
-  <main id="productList">
-    <!-- المنتجات ستُضاف هنا من خلال JavaScript -->
-  </main>
+  <main id="productList"></main>
+
+  <div id="popup">
+    <div id="popupContent">
+      <h2 id="popupTitle"></h2>
+      <p id="popupPrice"></p>
+      <p id="popupDesc"></p>
+      <button onclick="closePopup()">إغلاق</button>
+    </div>
+  </div>
+
+  <div id="cartPopup">
+    <div id="cartPopupContent">
+      <h2>محتويات السلة</h2>
+      <ul id="cartItems" style="text-align: right;"></ul>
+      <p><strong>المجموع:</strong> <span id="cartTotal">0</span> د.أ</p>
+      <button onclick="confirmOrder()">تأكيد الطلب</button>
+      <p id="orderMessage" style="color: green; margin-top: 10px;"></p>
+      <button onclick="closeCart()">إغلاق</button>
+    </div>
+  </div>
 
   <script>
     const products = [
-      {
-        id: 1,
-        name: "قميص نسائي",
-        price: 15,
-        image: "https://via.placeholder.com/200x150?text=قميص"
-      },
-      {
-        id: 2,
-        name: "حقيبة يد",
-        price: 25,
-        image: "https://via.placeholder.com/200x150?text=حقيبة"
-      },
-      {
-        id: 3,
-        name: "حذاء رياضي",
-        price: 30,
-        image: "https://via.placeholder.com/200x150?text=حذاء"
-      }
+      { id: 1, name: "قميص نسائي", price: 15, image: "https://via.placeholder.com/200x150?text=قميص", desc: "قميص قطن أنيق ومريح" },
+      { id: 2, name: "حقيبة يد", price: 25, image: "https://via.placeholder.com/200x150?text=حقيبة", desc: "حقيبة جلد عملية يومية" },
+      { id: 3, name: "حذاء رياضي", price: 30, image: "https://via.placeholder.com/200x150?text=حذاء", desc: "حذاء مريح للجري والمشي" }
     ];
 
     let cartCount = 0;
     let totalPrice = 0;
+    let cartItems = [];
 
     const productList = document.getElementById("productList");
     const cartCountSpan = document.getElementById("cartCount");
@@ -102,23 +127,76 @@
       products.forEach((product) => {
         const div = document.createElement("div");
         div.className = "product";
+        div.onclick = () => showPopup(product);
 
         div.innerHTML = `
           <img src="${product.image}" alt="${product.name}">
           <h3>${product.name}</h3>
           <p>السعر: ${product.price} د.أ</p>
-          <button onclick="addToCart(${product.price})">أضف إلى السلة</button>
+          <button onclick="event.stopPropagation(); addToCart(${product.price}, '${product.name}')">أضف إلى السلة</button>
         `;
 
         productList.appendChild(div);
       });
     }
 
-    function addToCart(price) {
+    function addToCart(price, name) {
       cartCount++;
       totalPrice += price;
+      cartItems.push({ name, price });
       cartCountSpan.textContent = cartCount;
       totalPriceSpan.textContent = totalPrice;
+    }
+
+    function showPopup(product) {
+      document.getElementById("popupTitle").textContent = product.name;
+      document.getElementById("popupPrice").textContent = `السعر: ${product.price} د.أ`;
+      document.getElementById("popupDesc").textContent = product.desc;
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function showCart() {
+      const popup = document.getElementById("cartPopup");
+      const cartList = document.getElementById("cartItems");
+      const total = document.getElementById("cartTotal");
+
+      cartList.innerHTML = "";
+      let sum = 0;
+
+      cartItems.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - ${item.price} د.أ`;
+        cartList.appendChild(li);
+        sum += item.price;
+      });
+
+      total.textContent = sum;
+      popup.style.display = "flex";
+    }
+
+    function closeCart() {
+      document.getElementById("cartPopup").style.display = "none";
+    }
+
+    function confirmOrder() {
+      if (cartItems.length === 0) {
+        alert("السلة فارغة!");
+        return;
+      }
+
+      document.getElementById("orderMessage").textContent = "✅ تم إرسال الطلب بنجاح!";
+      cartItems = [];
+      cartCount = 0;
+      totalPrice = 0;
+
+      cartCountSpan.textContent = 0;
+      totalPriceSpan.textContent = 0;
+      document.getElementById("cartItems").innerHTML = "";
+      document.getElementById("cartTotal").textContent = 0;
     }
 
     displayProducts();
