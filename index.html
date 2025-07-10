@@ -1,79 +1,15 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الدخول</title>
-  <style>
-    body {
-      background-color: #f2f2f2;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-box {
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 300px;
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #0a8;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #088;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الصفحة الرئيسية</title>
 </head>
-<body>
-  <div class="login-box">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <input type="password" id="password" placeholder="كلمة المرور">
-    <button onclick="login()">دخول</button>
-    <div class="error" id="error"></div>
-  </div>
-
-  <script>
-    function login() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
-      const error = document.getElementById('error');
-
-      // بيانات الدخول المقبولة
-      const validUser = "marina";
-      const validPass = "12345";
-
-      if (user === validUser && pass === validPass) {
-        // الانتقال للمتجر بعد النجاح
-        window.location.href = "Store.html";
-      } else {
-        error.textContent = "❌ اسم المستخدم أو كلمة المرور غير صحيحة";
-      }
-    }
-  </script>
+<body style="text-align:center; margin-top:100px; font-family:Arial;">
+  <h1>مرحبًا بك في المتجر البسيط</h1>
+  <p>اضغطي الزر للانتقال إلى صفحة المتجر</p>
+  <button onclick="location.href='store.html'" style="padding:15px 30px; font-size:18px; background-color:#4CAF50; color:white; border:none; border-radius:10px;">
+    ادخل إلى المتجر
+  </button>
 </body>
 </html>
